@@ -1,3 +1,4 @@
     Private Sub Page_LoadComplete(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.LoadComplete
         //removed extra line of code
+//added piece of code
     End Sub
