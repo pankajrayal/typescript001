@@ -1,0 +1,19 @@
+    Private Sub Page_LoadComplete(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.LoadComplete
+        'AWC000353 : 152192 Begin
+        'While (AsyncCounter)
+        '  'do nothing - wait for async postback to complete
+        'End While
+        'In the case that we used a background thread, wait for it to return
+        'FSIT 152190, AWC000353 Starts : ValidationWait.WaitOne time made configurable.
+        Dim Config As New Settings
+        'If (Not ValidationData.RequestType Is Nothing) AndAlso (Not ValidationWait.WaitOne(20000)) Then
+        Dim DisplayPageLoadTimeout As Integer ' FSIT 152190, AWC000353 : New variable to set configuarble Timeout in Model call.
+
+        DisplayPageLoadTimeout = Convert.ToInt32(Config("/Systems/newbusiness/common/DisplayPageLoadTimeout"))
+        If (Not ValidationData.RequestType Is Nothing) AndAlso (Not ValidationWait.WaitOne(DisplayPageLoadTimeout)) Then
+          'FSIT 152190, AWC000353 Ends.
+          Throw New SiteException("The validation background thread did not complete within the timeout.")
+        End If
+        If ValidationData.ErrorEncountered Then Throw New SiteException("SHSIVP04", ValidationData.Ex)
+        'AWC000353 : 152192 End
+    End Sub
